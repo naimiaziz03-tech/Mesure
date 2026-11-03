@@ -76,7 +76,9 @@ const $=s=>document.querySelector(s),e=s=>String(s).replace(/"/g,"&quot;");
 function inp(k,l,t){return`<label>${l}</label><input data-k="${k}" type="${t||"text"}" value="${e(V[k]||"")}">`}
 function sel(k,l){return`<label>${l}</label><select data-k="${k}">${ST.map(o=>`<option${(V[k]||"")==o?" selected":""}>${o}</option>`).join("")}</select>`}
 function ta(k,l){return`<label>${l}</label><textarea data-k="${k}">${V[k]||""}</textarea>`}
-function dl(k){return O[k]?`<datalist id="dl_${k}"><option value="${e(O[k])}"></datalist>`:""}
+const norm=x=>String(x||"").trim().toLowerCase();
+function refs(){return lst().map(x=>x.v).concat([O])}
+function dl(k){if(k==="poste"||k==="travee"){const r=refs().filter(x=>k==="poste"||norm(x.poste)===norm(V.poste)).map(x=>x[k]).filter(Boolean);return`<datalist id="dl_${k}">${[...new Set(r)].map(x=>`<option value="${e(x)}">`).join("")}</datalist>`}return O[k]?`<datalist id="dl_${k}"><option value="${e(O[k])}"></datalist>`:""}
 function ci(k){return`<input data-k="${k}" list="dl_${k}" value="${e(V[k]||"")}">${dl(k)}`}
 function fi(k,l,t){return`<div class="f"><span>${l} :</span>${t?`<input data-k="${k}" type="${t}" value="${e(V[k]||"")}">`:ci(k)}</div>`}
 function ln(a){return`<div class="ln" style="grid-template-columns:repeat(${a.length},1fr)">${a.map(([k,l])=>fi(k,l)).join("")}</div>`}
@@ -86,6 +88,10 @@ const esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const fd=d=>/^\d{4}-\d\d-\d\d$/.test(d||"")?d.split("-").reverse().join("/"):(d||"");
 const NV=["Pompe","Ventilateur n°1","Ventilateur n°2","Ventilateur n°3","Ventilateur n°4","Ventilateur n°5","Ventilateur n°6","Ventilateur n°7","Ventilateur n°8"];
 const akey=(i,g)=>i?`a_v${i}${g}`:`a_pompe${g}`;
+const AF=["marque","tension","freq","type","puiss","serie","tcc","refroid","rtype","prises","rpass","tmot","bmarque","btension","btype","bpuiss","i_app","i_type","i_ser","i_date"];
+function autoFill(){if(!V.poste||!V.travee||mode==="ref")return;const r=refs().find(x=>norm(x.poste)===norm(V.poste)&&norm(x.travee)===norm(V.travee));if(!r)return;let n=0;AF.concat(Object.keys(r).filter(k=>/^[mb]_.+_t$/.test(k))).forEach(k=>{if(!V[k]&&r[k]){V[k]=r[k];n++}});if(n){persist();render();toast("تم ملء بيانات 1 و2 و3 من الفيشة المرجعية")}}
+let DP=null;addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();DP=ev});
+function install(){if(DP){DP.prompt();DP=null;return}showOv('<div class="it" style="display:block"><b>تنصيب التطبيق</b><p>1) افتح رابط التطبيق في المتصفح مباشرة (وليس داخل نافذة Claude).<br>2) Android / Chrome: القائمة ⋮ ← «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».<br>3) iPhone / Safari: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».</p></div>',0)}
 function persist(){try{localStorage.setItem(K,JSON.stringify(V))}catch(_){}}
 function b(k,v,t,c){return`<button type="button" data-s="${k}" data-v="${v}" class="${c||""}${V[k]===v?" on":""}">${t}</button>`}
 function sg(k,a){return`<span class="sg">${a.map(([v,t])=>b(k,v,t)).join("")}</span>`}
@@ -121,17 +127,16 @@ h+=`<section class="ltr"><h2>5. Contrôle des groupes Aéro-réfrigérants</h2><
 h+=`<section class="ltr"><h2>6. Vérifications diverses</h2>${xt(DV.slice(0,7))}<div style="height:8px"></div>${xt(DV.slice(7))}${ta("obs3","Observation")}<div class="tw"><table class="bt"><tr><th></th><th>Régleur</th></tr><tr><td>Relevé compteur de Régleur</td><td>${ci("r_cpt")}</td></tr></table></div></section>`;
 h+=`<section><h2>Visas</h2><div class="g2">${inp("n_resp","Resp. Travaux")}${inp("n_chef","Chef de section")}${inp("n_serv","Chef de Service Maintenance")}</div></section></div>`;
 $("#app").innerHTML=h;
-document.querySelectorAll("[data-k]").forEach(x=>{if(ro)x.disabled=true;x.oninput=x.onchange=()=>{V[x.dataset.k]=x.value;if(x.dataset.k==="date")V.date_u=1;try{localStorage.setItem(K,JSON.stringify(V))}catch(_){}}});
+document.querySelectorAll("[data-k]").forEach(x=>{if(ro)x.disabled=true;x.oninput=x.onchange=ev=>{const kk=x.dataset.k;V[kk]=x.value;if(kk==="date")V.date_u=1;persist();if(kk==="poste"){const d=document.getElementById("dl_travee");if(d)d.outerHTML=dl("travee")}if(ev.type==="change"&&(kk==="poste"||kk==="travee"))autoFill()}});
 }
 function setMode(m){mode=m;$("#t1").className=m==="in"?"on":"";$("#t2").className=m==="ref"?"on":"";
 if(m==="ref"){V=JSON.parse(JSON.stringify(O));$("#note").textContent="عرض للقراءة فقط: القيم كما وردت في الملف الأصلي (الملف .doc الأصلي محفوظ كنسخة منفصلة).";$("#bar").innerHTML="";}
 else{try{V=JSON.parse(localStorage.getItem(K)||"{}")}catch(_){V={}}
 if(!V.date_u)V.date=TODAY;if(!V.freq)V.freq="50";
 $("#note").textContent="تُحفظ البيانات تلقائياً على هذا الجهاز.";
-$("#bar").innerHTML='<button id="b4">معاينة</button><button id="b5">حفظ</button><button id="b6">المحفوظات</button><button id="b1">تحميل قيم النسخة الأصلية</button><button id="b3">فيشة جديدة</button>';
+$("#bar").innerHTML='<button id="b4">معاينة</button><button id="b5">حفظ</button><button id="b6">المحفوظات</button><button id="b3">فيشة جديدة</button><button id="b7">تنصيب التطبيق</button>';
 $("#b4").onclick=()=>showOv(pv(V),1);$("#b5").onclick=saveCur;$("#b6").onclick=showList;
-$("#b1").onclick=function(){cf(this,()=>{V=JSON.parse(JSON.stringify(O));V.date=TODAY;persist();render()})};
-$("#b3").onclick=function(){cf(this,()=>{V={date:TODAY,freq:"50"};persist();render()})};}
+$("#b3").onclick=function(){cf(this,()=>{V={date:TODAY,freq:"50"};persist();render()})};$("#b7").onclick=install;}
 render()}
 $("#app").addEventListener("click",ev=>{const x=ev.target.closest("[data-s]");if(!x||mode==="ref")return;const k=x.dataset.s,v=x.dataset.v;V[k]=V[k]===v?"":v;persist();document.querySelectorAll(`[data-s="${k}"]`).forEach(y=>y.classList.toggle("on",V[k]===y.dataset.v))});
 $("#oc").onclick=()=>{$("#ov").hidden=true};$("#op").onclick=()=>{try{window.print()}catch(_){}};
