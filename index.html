@@ -28,7 +28,7 @@ textarea{min-height:70px}
 .ro input,.ro select,.ro textarea{pointer-events:none;background:var(--ac2)}
 .ltr{direction:ltr;text-align:left}.ltr h2{text-align:left}
 .ln{display:grid;gap:8px;margin:8px 0}
-.f{display:flex;align-items:center;gap:5px;min-width:0}.f span{white-space:nowrap;font-size:12px}.f input{flex:1;min-width:0;padding:6px}
+.f{display:flex;align-items:center;gap:5px;min-width:0}.f.sm input{flex:none;width:4.2em;text-align:center}.f span{white-space:nowrap;font-size:12px}.f input{flex:1;min-width:0;padding:6px}
 .bt{width:100%;border-collapse:collapse}.bt td,.bt th{border:1px solid var(--bd);padding:2px 4px;font-size:12px}
 .bt td:first-child{min-width:128px}.bt input{border:0;background:transparent;padding:6px 3px;min-width:70px}
 .bt th{background:var(--ac2);text-align:center}.bt tr.sh td{font-weight:700;background:var(--ac2)}
@@ -46,7 +46,7 @@ button.okb.on{background:#1f8f4e;border-color:#1f8f4e}button.nob.on{background:#
 #toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;z-index:30}
 @media print{main,header,#toast,.ovt{display:none!important}#ov{position:static!important;overflow:visible!important;padding:0}}
 @media print{header,.bar{display:none}section{break-inside:avoid}}
-</style></head><body>
+</style><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1d5fd0"><link rel="apple-touch-icon" href="icon-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><script>window.PWA=1;if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script></head><body>
 <header><h1>فيشة مراقبة واختبار المحول n°1 — TAZA II</h1>
 <div class="tabs"><button id="t1" class="on">إدخال البيانات</button><button id="t2">المرجع (النسخة الأصلية)</button></div></header>
 <main><div id="note" class="note"></div><div class="bar" id="bar"></div><div id="app"></div></main>
@@ -80,8 +80,8 @@ const norm=x=>String(x||"").trim().toLowerCase();
 function refs(){return lst().map(x=>x.v).concat([O])}
 function dl(k){if(k==="poste"||k==="travee"){const r=refs().filter(x=>k==="poste"||norm(x.poste)===norm(V.poste)).map(x=>x[k]).filter(Boolean);return`<datalist id="dl_${k}">${[...new Set(r)].map(x=>`<option value="${e(x)}">`).join("")}</datalist>`}return O[k]?`<datalist id="dl_${k}"><option value="${e(O[k])}"></datalist>`:""}
 function ci(k){return`<input data-k="${k}" list="dl_${k}" value="${e(V[k]||"")}">${dl(k)}`}
-function fi(k,l,t){return`<div class="f"><span>${l} :</span>${t?`<input data-k="${k}" type="${t}" value="${e(V[k]||"")}">`:ci(k)}</div>`}
-function ln(a){return`<div class="ln" style="grid-template-columns:repeat(${a.length},1fr)">${a.map(([k,l])=>fi(k,l)).join("")}</div>`}
+function fi(k,l,t){return`<div class="f${k==="tension"||k==="freq"?" sm":""}"><span>${l} :</span>${t?`<input data-k="${k}" type="${t}" value="${e(V[k]||"")}">`:ci(k)}</div>`}
+function ln(a){return`<div class="ln" style="grid-template-columns:${a.length==3?"1fr auto auto":"repeat("+a.length+",1fr)"}">${a.map(([k,l])=>fi(k,l)).join("")}</div>`}
 function bt(){const hd=(t)=>`<tr class="sh"><td colspan="3">${t}</td></tr>`;const rw=(p,c,l)=>`<tr><td>${l}</td><td>${ci(p+"_"+c+"_t")}</td><td>${ci(p+"_"+c+"_m")}</td></tr>`;
 return`<div class="tw"><table class="bt"><tr><th></th><th>Valeur théorique</th><th>Valeur mesurée</th></tr>${hd("Transformateur principal")}${rw("m","inj","Tension injectée (V)")}${rw("m","temp","Température de test (°C)")}${MR.map(([c,l])=>rw("m",c,l)).join("")}${hd("Transformateur Biberon (auxiliaire)")}${rw("b","inj","Tension injectée (V)")}${rw("b","temp","Température de test (°C)")}${BR.map(([c,l])=>rw("b",c,l)).join("")}</table></div>`}
 const esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
@@ -91,7 +91,10 @@ const akey=(i,g)=>i?`a_v${i}${g}`:`a_pompe${g}`;
 const AF=["marque","tension","freq","type","puiss","serie","tcc","refroid","rtype","prises","rpass","tmot","bmarque","btension","btype","bpuiss","i_app","i_type","i_ser","i_date"];
 function autoFill(){if(!V.poste||!V.travee||mode==="ref")return;const r=refs().find(x=>norm(x.poste)===norm(V.poste)&&norm(x.travee)===norm(V.travee));if(!r)return;let n=0;AF.concat(Object.keys(r).filter(k=>/^[mb]_.+_t$/.test(k))).forEach(k=>{if(!V[k]&&r[k]){V[k]=r[k];n++}});if(n){persist();render();toast("تم ملء بيانات 1 و2 و3 من الفيشة المرجعية")}}
 let DP=null;addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();DP=ev});
-function install(){if(DP){DP.prompt();DP=null;return}showOv('<div class="it" style="display:block"><b>تنصيب التطبيق</b><p>1) افتح رابط التطبيق في المتصفح مباشرة (وليس داخل نافذة Claude).<br>2) Android / Chrome: القائمة ⋮ ← «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».<br>3) iPhone / Safari: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».</p></div>',0)}
+const SA=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+addEventListener("appinstalled",()=>{DP=null;toast("تم التنصيب ✓")});
+function install(){if(SA){toast("التطبيق مفتوح كتطبيق منصّب");return}if(DP){DP.prompt();DP=null;return}
+showOv(window.PWA?'<div class="it" style="display:block"><b>تنصيب التطبيق</b><p>Android / Chrome: القائمة ⋮ ← «تثبيت التطبيق».<br>iPhone / Safari: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».<br>إذا ظهرت «Open in app» فالتطبيق منصّب بالفعل.</p></div>':'<div class="it" style="display:block"><b>التنصيب</b><p>هذه النسخة تعمل داخل Claude، لذلك يعرض المتصفح تنصيب Claude (المنصّب مسبقاً). لتنصيب هذا التطبيق باستقلالية استعمل ملفات التنصيب (index.html وmanifest.json وsw.js والأيقونات) وانشرها على GitHub Pages.</p></div>',0)}
 function persist(){try{localStorage.setItem(K,JSON.stringify(V))}catch(_){}}
 function b(k,v,t,c){return`<button type="button" data-s="${k}" data-v="${v}" class="${c||""}${V[k]===v?" on":""}">${t}</button>`}
 function sg(k,a){return`<span class="sg">${a.map(([v,t])=>b(k,v,t)).join("")}</span>`}
@@ -114,7 +117,7 @@ h+=H("3. Mesurage de l'isolement")+T(`<tr><th>Appareil de mesure</th><th>Type</t
 h+=H("4. Contrôle et réglage des accessoires de protection")+T(`<tr><th></th><th>OK</th><th>Non OK</th></tr>`+PR.map(([k,l])=>`<tr><td>${l}</td><td>${v["p_"+k]=="OK"?"OK":""}</td><td>${v["p_"+k]=="Non OK"?"Non OK":""}</td></tr>`).join(""));
 h+=H("5. Contrôle des groupes Aéro-réfrigérants")+T(`<tr><th></th><th>Groupe n°1</th><th>Groupe n°2</th><th>Groupe n°3</th><th>Groupe n°4</th></tr>`+NV.map((n,i)=>`<tr><td>${n}</td>${[1,2,3,4].map(g=>`<td>${t(akey(i,g))}</td>`).join("")}</tr>`).join(""))+ob("obs2");
 h+=H("6. Vérifications diverses")+vt(DV.slice(0,7))+vt(DV.slice(7))+ob("obs3")+T(`<tr><th></th><th>Régleur</th></tr><tr><td>Relevé compteur de Régleur</td><td>${t("r_cpt")}</td></tr>`);
-h+=`<br>`+T(`<tr><th></th><th>Resp. Travaux</th><th>Chef de section</th><th>Chef de Service Maintenance</th></tr><tr><td><b>Nom</b></td><td>${t("n_resp")}</td><td>${t("n_chef")}</td><td>${t("n_serv")}</td></tr><tr><td><b>Visa</b></td><td>&nbsp;</td><td></td><td></td></tr>`)+`</div>`;return h}
+h+=`<br>`+T(`<tr><th></th><th>Resp. Travaux</th><th>Chef de section</th><th>Chef de Service Maintenance</th></tr><tr><td><b>Nom</b></td><td>${t("n_resp")}</td><td>BENSAID</td><td>M.LAMTERKATI</td></tr><tr><td><b>Visa</b></td><td>&nbsp;</td><td></td><td></td></tr>`)+`</div>`;return h}
 function mrows(p,R){return R.map(([c,l])=>`<div class="row"><span>${l}</span>${p==="m"&&0?"":""}<input data-k="${p}_${c}_t" placeholder="théorique" value="${e(V[p+"_"+c+"_t"]||"")}"><input data-k="${p}_${c}_m" placeholder="mesurée" value="${e(V[p+"_"+c+"_m"]||"")}"></div>`).join("")}
 function render(){
 const ro=mode==="ref";
@@ -125,7 +128,7 @@ h+=`<section class="ltr"><h2>3. Mesurage de l'isolement</h2><div class="tw"><tab
 h+=`<section class="ltr"><h2>4. Contrôle et réglage des accessoires de protection</h2><div class="tw"><table class="bt"><tr><th></th><th>OK</th><th>Non OK</th></tr>${PR.map(([k,l])=>`<tr><td>${l}</td><td class="c">${b("p_"+k,"OK","OK","okb gh")}</td><td class="c">${b("p_"+k,"Non OK","Non OK","nob gh")}</td></tr>`).join("")}</table></div></section>`;
 h+=`<section class="ltr"><h2>5. Contrôle des groupes Aéro-réfrigérants</h2><div class="tw"><table class="bt"><tr><th></th><th>Groupe n°1</th><th>Groupe n°2</th><th>Groupe n°3</th><th>Groupe n°4</th></tr>${NV.map((n,i)=>`<tr><td>${n}</td>${[1,2,3,4].map(g=>`<td class="c">${sg(akey(i,g),[["OK","OK"],["-","-"],["En défaut","Déf."]])}</td>`).join("")}</tr>`).join("")}</table></div><div class="note">Déf. = En défaut</div>${ta("obs2","Observation")}</section>`;
 h+=`<section class="ltr"><h2>6. Vérifications diverses</h2>${xt(DV.slice(0,7))}<div style="height:8px"></div>${xt(DV.slice(7))}${ta("obs3","Observation")}<div class="tw"><table class="bt"><tr><th></th><th>Régleur</th></tr><tr><td>Relevé compteur de Régleur</td><td>${ci("r_cpt")}</td></tr></table></div></section>`;
-h+=`<section><h2>Visas</h2><div class="g2">${inp("n_resp","Resp. Travaux")}${inp("n_chef","Chef de section")}${inp("n_serv","Chef de Service Maintenance")}</div></section></div>`;
+h+=`<section class="ltr"><h2>Visas</h2><div class="f"><span>Resp. Travaux :</span>${sg("n_resp",[["EL YAAGOUBI","EL YAAGOUBI"],["HAKKI","HAKKI"]])}</div></section></div>`;
 $("#app").innerHTML=h;
 document.querySelectorAll("[data-k]").forEach(x=>{if(ro)x.disabled=true;x.oninput=x.onchange=ev=>{const kk=x.dataset.k;V[kk]=x.value;if(kk==="date")V.date_u=1;persist();if(kk==="poste"){const d=document.getElementById("dl_travee");if(d)d.outerHTML=dl("travee")}if(ev.type==="change"&&(kk==="poste"||kk==="travee"))autoFill()}});
 }
