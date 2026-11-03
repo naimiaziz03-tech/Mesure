@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>فيشة مراقبة واختبار المحول n°1 – TAZA II</title>
+<title>اختبار المحول</title>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#5d6773;--bd:#d6dbe1;--ac:#1d5fd0;--ac2:#e8f0fd;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171b;--card:#1d2127;--tx:#e8ebef;--mu:#9aa5b1;--bd:#333a43;--ac:#6ea0ff;--ac2:#202b40}}
@@ -28,7 +28,7 @@ textarea{min-height:70px}
 .ro input,.ro select,.ro textarea{pointer-events:none;background:var(--ac2)}
 .ltr{direction:ltr;text-align:left}.ltr h2{text-align:left}
 .ln{display:grid;gap:8px;margin:8px 0}
-.f{display:flex;align-items:center;gap:5px;min-width:0}.f.dt input{flex:none;width:9.8em}.bt input[type=date]{width:9.8em;min-width:0}.f.sm input{flex:none;width:4.2em;text-align:center}.f span{white-space:nowrap;font-size:12px}.f input{flex:1;min-width:0;padding:6px}
+.f{display:flex;align-items:center;gap:5px;min-width:0}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}.chip{padding:3px 10px;font-size:12px;border-radius:14px}.f.dt input{flex:none;width:9.8em}.bt input[type=date]{width:9.8em;min-width:0}.f.sm input{flex:none;width:4.2em;text-align:center}.f span{white-space:nowrap;font-size:12px}.f input{flex:1;min-width:0;padding:6px}
 .bt{width:100%;border-collapse:collapse}.bt td,.bt th{border:1px solid var(--bd);padding:2px 4px;font-size:12px}
 .bt td:first-child{min-width:128px}.bt input{border:0;background:transparent;padding:6px 3px;min-width:70px}
 .bt th{background:var(--ac2);text-align:center}.bt tr.sh td{font-weight:700;background:var(--ac2)}
@@ -46,8 +46,8 @@ button.okb.on{background:#1f8f4e;border-color:#1f8f4e}button.nob.on{background:#
 #toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;z-index:30}
 @media print{main,header,#toast,.ovt{display:none!important}#ov{position:static!important;overflow:visible!important;padding:0}}
 @media print{header,.bar{display:none}section{break-inside:avoid}}
-</style><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1d5fd0"><link rel="apple-touch-icon" href="icon-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><script>window.PWA=1;if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script></head><body>
-<header><h1>فيشة مراقبة واختبار المحول n°1 — TAZA II</h1>
+</style><link rel="icon" href="icon-v2-192.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1d5fd0"><link rel="apple-touch-icon" href="icon-v2-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><script>window.PWA=1;if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script></head><body>
+<header><h1>اختبار المحول</h1>
 <div class="tabs"><button id="t1" class="on">إدخال البيانات</button><button id="t2">المرجع (النسخة الأصلية)</button></div></header>
 <main><div id="note" class="note"></div><div class="bar" id="bar"></div><div id="app"></div></main>
 <div id="ov" hidden><div class="ovt"><button id="oc">إغلاق</button><button id="op">تحميل</button></div><div id="ovc"></div></div><div id="toast"></div>
@@ -78,9 +78,11 @@ function sel(k,l){return`<label>${l}</label><select data-k="${k}">${ST.map(o=>`<
 function ta(k,l){return`<label>${l}</label><textarea data-k="${k}">${V[k]||""}</textarea>`}
 const norm=x=>String(x||"").trim().toLowerCase();
 function refs(){return lst().map(x=>x.v).concat([O])}
+function chips(k){const r=refs().filter(x=>k==="poste"||norm(x.poste)===norm(V.poste)).map(x=>x[k]).filter(Boolean);return[...new Set(r)].map(x=>`<button type="button" class="chip${norm(V[k])===norm(x)?" on":""}" data-sg="${k}" data-v="${e(x)}">${esc(x)}</button>`).join("")}
+function rc(){const a=$("#ch_poste"),b=$("#ch_travee");if(a)a.innerHTML=chips("poste");if(b)b.innerHTML=chips("travee")}
 function dl(k){if(k==="poste"||k==="travee"){const r=refs().filter(x=>k==="poste"||norm(x.poste)===norm(V.poste)).map(x=>x[k]).filter(Boolean);return`<datalist id="dl_${k}">${[...new Set(r)].map(x=>`<option value="${e(x)}">`).join("")}</datalist>`}return O[k]?`<datalist id="dl_${k}"><option value="${e(O[k])}"></datalist>`:""}
 function ci(k){return`<input data-k="${k}" list="dl_${k}" value="${e(V[k]||"")}">${dl(k)}`}
-function fi(k,l,t){return`<div class="f${k==="tension"||k==="freq"?" sm":""}${t==="date"?" dt":""}"><span>${l} :</span>${t?`<input data-k="${k}" type="${t}" value="${e(V[k]||"")}">`:ci(k)}</div>`}
+function fi(k,l,t){return`<div class="f${k==="tension"||k==="freq"?" sm":""}${t==="date"?" dt":""}"><span>${l} :</span>${t?`<input data-k="${k}" type="${t}" value="${e(V[k]||"")}">`:ci(k)}</div>`+(k==="poste"||k==="travee"?`<div class="chips" id="ch_${k}">${chips(k)}</div>`:"")}
 function ln(a){return`<div class="ln" style="grid-template-columns:${a.length==3?"1fr auto auto":"repeat("+a.length+",1fr)"}">${a.map(([k,l])=>fi(k,l)).join("")}</div>`}
 function bt(){const hd=(t)=>`<tr class="sh"><td colspan="3">${t}</td></tr>`;const rw=(p,c,l)=>`<tr><td>${l}</td><td>${ci(p+"_"+c+"_t")}</td><td>${ci(p+"_"+c+"_m")}</td></tr>`;
 return`<div class="tw"><table class="bt"><tr><th></th><th>Valeur théorique</th><th>Valeur mesurée</th></tr>${hd("Transformateur principal")}${rw("m","inj","Tension injectée (V)")}${rw("m","temp","Température de test (°C)")}${MR.map(([c,l])=>rw("m",c,l)).join("")}${hd("Transformateur Biberon (auxiliaire)")}${rw("b","inj","Tension injectée (V)")}${rw("b","temp","Température de test (°C)")}${BR.map(([c,l])=>rw("b",c,l)).join("")}</table></div>`}
@@ -90,11 +92,12 @@ const NV=["Pompe","Ventilateur n°1","Ventilateur n°2","Ventilateur n°3","Vent
 const akey=(i,g)=>i?`a_v${i}${g}`:`a_pompe${g}`;
 const AF=["marque","tension","freq","type","puiss","serie","tcc","refroid","rtype","prises","rpass","tmot","bmarque","btension","btype","bpuiss","i_app","i_type","i_ser","i_date"];
 function autoFill(){if(!V.poste||!V.travee||mode==="ref")return;const r=refs().find(x=>norm(x.poste)===norm(V.poste)&&norm(x.travee)===norm(V.travee));if(!r)return;let n=0;AF.concat(Object.keys(r).filter(k=>/^[mb]_.+_t$/.test(k))).forEach(k=>{if(!V[k]&&r[k]){V[k]=r[k];n++}});if(n){persist();render();toast("تم ملء بيانات 1 و2 و3 من الفيشة المرجعية")}}
-let DP=null;addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();DP=ev});
+let DP=null;addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();DP=ev;updInst()});
 const SA=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
-addEventListener("appinstalled",()=>{DP=null;toast("تم التنصيب ✓")});
-function install(){if(SA){toast("التطبيق مفتوح كتطبيق منصّب");return}if(DP){DP.prompt();DP=null;return}
-showOv(window.PWA?'<div class="it" style="display:block"><b>تنصيب التطبيق</b><p>Android / Chrome: القائمة ⋮ ← «تثبيت التطبيق».<br>iPhone / Safari: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».<br>إذا ظهرت «Open in app» فالتطبيق منصّب بالفعل.</p></div>':'<div class="it" style="display:block"><b>التنصيب</b><p>هذه النسخة تعمل داخل Claude، لذلك يعرض المتصفح تنصيب Claude (المنصّب مسبقاً). لتنصيب هذا التطبيق باستقلالية استعمل ملفات التنصيب (index.html وmanifest.json وsw.js والأيقونات) وانشرها على GitHub Pages.</p></div>',0)}
+addEventListener("appinstalled",()=>{DP=null;toast("تم التنصيب ✓");updInst()});
+const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+function updInst(){const x=$("#b7");if(x)x.style.display=(window.PWA&&!SA&&(DP||IOS))?"":"none"}
+function install(){if(DP){DP.prompt();DP=null;updInst();return}showOv('<div class="it" style="display:block"><b>تنصيب التطبيق</b><p>iPhone / Safari: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».</p></div>',0)}
 function persist(){try{localStorage.setItem(K,JSON.stringify(V))}catch(_){}}
 function b(k,v,t,c){return`<button type="button" data-s="${k}" data-v="${v}" class="${c||""}${V[k]===v?" on":""}">${t}</button>`}
 function sg(k,a){return`<span class="sg">${a.map(([v,t])=>b(k,v,t)).join("")}</span>`}
@@ -176,18 +179,18 @@ h+=`<section class="ltr"><h2>5. Contrôle des groupes Aéro-réfrigérants</h2><
 h+=`<section class="ltr"><h2>6. Vérifications diverses</h2>${xt(DV.slice(0,7))}<div style="height:8px"></div>${xt(DV.slice(7))}${ta("obs3","Observation")}<div class="tw"><table class="bt"><tr><th></th><th>Régleur</th></tr><tr><td>Relevé compteur de Régleur</td><td>${ci("r_cpt")}</td></tr></table></div></section>`;
 h+=`<section class="ltr"><h2>Visas</h2><div class="f"><span>Resp. Travaux :</span>${sg("n_resp",[["EL YAAGOUBI","EL YAAGOUBI"],["HAKKI","HAKKI"]])}</div></section></div>`;
 $("#app").innerHTML=h;
-document.querySelectorAll("[data-k]").forEach(x=>{if(ro)x.disabled=true;x.oninput=x.onchange=ev=>{const kk=x.dataset.k;V[kk]=x.value;if(kk==="date")V.date_u=1;persist();if(kk==="poste"){const d=document.getElementById("dl_travee");if(d)d.outerHTML=dl("travee")}if(ev.type==="change"&&(kk==="poste"||kk==="travee"))autoFill()}});
+document.querySelectorAll("[data-k]").forEach(x=>{if(ro)x.disabled=true;x.oninput=x.onchange=ev=>{const kk=x.dataset.k;V[kk]=x.value;if(kk==="date")V.date_u=1;persist();if(kk==="poste"||kk==="travee"){const d=document.getElementById("dl_travee");if(kk==="poste"&&d)d.outerHTML=dl("travee");rc()}if(ev.type==="change"&&(kk==="poste"||kk==="travee"))autoFill()}});
 }
 function setMode(m){mode=m;$("#t1").className=m==="in"?"on":"";$("#t2").className=m==="ref"?"on":"";
 if(m==="ref"){V=JSON.parse(JSON.stringify(O));$("#note").textContent="عرض للقراءة فقط: القيم كما وردت في الملف الأصلي (الملف .doc الأصلي محفوظ كنسخة منفصلة).";$("#bar").innerHTML="";}
 else{try{V=JSON.parse(localStorage.getItem(K)||"{}")}catch(_){V={}}
 if(!V.date_u)V.date=TODAY;if(!V.freq)V.freq="50";{const m=/^(\d\d)\/(\d\d)\/(\d{4})$/.exec(V.i_date||"");if(m)V.i_date=`${m[3]}-${m[2]}-${m[1]}`;if(!V.i_date)V.i_date="2014-12-21"}
 $("#note").textContent="تُحفظ البيانات تلقائياً على هذا الجهاز.";
-$("#bar").innerHTML='<button id="b4">معاينة</button><button id="b5">حفظ</button><button id="b6">المحفوظات</button><button id="b3">فيشة جديدة</button><button id="b7">تنصيب التطبيق</button>';
+$("#bar").innerHTML='<button id="b4">معاينة</button><button id="b5">حفظ</button><button id="b6">المحفوظات</button><button id="b3">فيشة جديدة</button><button id="b7" style="display:none">تنصيب التطبيق</button>';
 $("#b4").onclick=()=>showOv(pv(V),1);$("#b5").onclick=saveCur;$("#b6").onclick=showList;
-$("#b3").onclick=function(){cf(this,()=>{V={date:TODAY,freq:"50",i_date:"2014-12-21"};persist();render()})};$("#b7").onclick=install;}
+$("#b3").onclick=function(){cf(this,()=>{V={date:TODAY,freq:"50",i_date:"2014-12-21"};persist();render()})};$("#b7").onclick=install;updInst();}
 render()}
-$("#app").addEventListener("click",ev=>{const x=ev.target.closest("[data-s]");if(!x||mode==="ref")return;const k=x.dataset.s,v=x.dataset.v;V[k]=V[k]===v?"":v;persist();document.querySelectorAll(`[data-s="${k}"]`).forEach(y=>y.classList.toggle("on",V[k]===y.dataset.v))});
+$("#app").addEventListener("click",ev=>{const c=ev.target.closest("[data-sg]");if(c&&mode!=="ref"){const k=c.dataset.sg;V[k]=c.dataset.v;const i=document.querySelector(`[data-k="${k}"]`);if(i)i.value=V[k];persist();if(k==="poste"){const d=document.getElementById("dl_travee");if(d)d.outerHTML=dl("travee")}rc();autoFill();return}const x=ev.target.closest("[data-s]");if(!x||mode==="ref")return;const k=x.dataset.s,v=x.dataset.v;V[k]=V[k]===v?"":v;persist();document.querySelectorAll(`[data-s="${k}"]`).forEach(y=>y.classList.toggle("on",V[k]===y.dataset.v))});
 $("#oc").onclick=()=>{$("#ov").hidden=true};$("#op").onclick=doDownload;
 $("#ovc").onclick=ev=>{const x=ev.target.closest("button");if(!x)return;if(x.dataset.o){const r=lst().find(y=>String(y.id)===x.dataset.o);if(r){V=r.v;persist();$("#ov").hidden=true;setMode("in")}}else if(x.dataset.d){cf(x,()=>{try{localStorage.setItem(K+"-l",JSON.stringify(lst().filter(y=>String(y.id)!==x.dataset.d)))}catch(_){}showList()})}};
 $("#t1").onclick=()=>setMode("in");$("#t2").onclick=()=>setMode("ref");setMode("in");
