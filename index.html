@@ -46,10 +46,10 @@ button.okb.on{background:#1f8f4e;border-color:#1f8f4e}button.nob.on{background:#
 #toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;z-index:30}
 @media print{main,header,#toast,.ovt{display:none!important}#ov{position:static!important;overflow:visible!important;padding:0}}
 @media print{header,.bar{display:none}section{break-inside:avoid}}
-</style><link rel="icon" href="icon-v2-192.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1d5fd0"><link rel="apple-touch-icon" href="icon-v2-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><script>window.PWA=1;if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script></head><body>
+</style><link rel="icon" href="icon-v2-192.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1d5fd0"><link rel="apple-touch-icon" href="icon-v2-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><script>window.PWA=1;if("serviceWorker"in navigator){const had=!!navigator.serviceWorker.controller;let rl=0;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!rl){rl=1;location.reload()}});addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();document.addEventListener("visibilitychange",()=>{if(!document.hidden)r.update()})}).catch(()=>{}))}</script></head><body>
 <header><h1>اختبار المحول</h1>
 <div class="tabs"><button id="t1" class="on">إدخال البيانات</button><button id="t2">المرجع (النسخة الأصلية)</button></div></header>
-<main><div id="note" class="note"></div><div class="bar" id="bar"></div><div id="app"></div></main>
+<main><div id="note" class="note"></div><div class="bar" id="bar"></div><div id="app"></div><div class="note" style="text-align:center;margin-top:14px">الإصدار 7</div></main>
 <div id="ov" hidden><div class="ovt"><button id="oc">إغلاق</button><button id="op">تحميل</button></div><div id="ovc"></div></div><div id="toast"></div>
 <script>
 const ST=["","OK","Non OK","En défaut","H.S","X","-"];
@@ -96,6 +96,7 @@ let DP=null;addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();DP=e
 const SA=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
 addEventListener("appinstalled",()=>{DP=null;toast("تم التنصيب ✓");updInst()});
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+async function forceUpdate(){try{toast("جارٍ التحديث…");const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(_){}location.replace(location.pathname+"?u="+Date.now())}
 function updInst(){const x=$("#b7");if(x)x.style.display=(window.PWA&&!SA&&(DP||IOS))?"":"none"}
 function install(){if(DP){DP.prompt();DP=null;updInst();return}showOv('<div class="it" style="display:block"><b>تنصيب التطبيق</b><p>iPhone / Safari: زر المشاركة ← «إضافة إلى الشاشة الرئيسية».</p></div>',0)}
 function persist(){try{localStorage.setItem(K,JSON.stringify(V))}catch(_){}}
@@ -188,7 +189,7 @@ if(!V.date_u)V.date=TODAY;if(!V.freq)V.freq="50";{const m=/^(\d\d)\/(\d\d)\/(\d{
 $("#note").textContent="تُحفظ البيانات تلقائياً على هذا الجهاز.";
 $("#bar").innerHTML='<button id="b4">معاينة</button><button id="b5">حفظ</button><button id="b6">المحفوظات</button><button id="b3">فيشة جديدة</button><button id="b7" style="display:none">تنصيب التطبيق</button>';
 $("#b4").onclick=()=>showOv(pv(V),1);$("#b5").onclick=saveCur;$("#b6").onclick=showList;
-$("#b3").onclick=function(){cf(this,()=>{V={date:TODAY,freq:"50",i_date:"2014-12-21"};persist();render()})};$("#b7").onclick=install;updInst();}
+$("#b3").onclick=function(){cf(this,()=>{V={date:TODAY,freq:"50",i_date:"2014-12-21"};persist();render()})};$("#b7").onclick=install;updInst();if(window.PWA){$("#bar").insertAdjacentHTML("beforeend",'<button id="b8">تحديث التطبيق</button>');$("#b8").onclick=forceUpdate}}
 render()}
 $("#app").addEventListener("click",ev=>{const c=ev.target.closest("[data-sg]");if(c&&mode!=="ref"){const k=c.dataset.sg;V[k]=c.dataset.v;const i=document.querySelector(`[data-k="${k}"]`);if(i)i.value=V[k];persist();if(k==="poste"){const d=document.getElementById("dl_travee");if(d)d.outerHTML=dl("travee")}rc();autoFill();return}const x=ev.target.closest("[data-s]");if(!x||mode==="ref")return;const k=x.dataset.s,v=x.dataset.v;V[k]=V[k]===v?"":v;persist();document.querySelectorAll(`[data-s="${k}"]`).forEach(y=>y.classList.toggle("on",V[k]===y.dataset.v))});
 $("#oc").onclick=()=>{$("#ov").hidden=true};$("#op").onclick=doDownload;
