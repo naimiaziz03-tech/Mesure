@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فيشة مراقبة واختبار المحول n°1 – TAZA II</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#5d6773;--bd:#d6dbe1;--ac:#1d5fd0;--ac2:#e8f0fd;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171b;--card:#1d2127;--tx:#e8ebef;--mu:#9aa5b1;--bd:#333a43;--ac:#6ea0ff;--ac2:#202b40}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;font-size:15px}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--card);border-bottom:1px solid var(--bd);padding:10px 12px;z-index:5}
+h1{font-size:16px;margin:0 0 8px}
+.tabs{display:flex;gap:6px}.tabs button{flex:1}
+button{font:inherit;padding:9px 10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{padding:10px 12px 40px;max-width:760px;margin:auto}
+section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin:10px 0}
+h2{font-size:15px;margin:0 0 10px;color:var(--ac)}
+label{display:block;font-size:12px;color:var(--mu);margin:8px 0 3px;direction:ltr;text-align:left}
+input,select,textarea{width:100%;box-sizing:border-box;font:inherit;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);direction:ltr}
+textarea{min-height:70px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px;align-items:end;margin-top:6px}
+.row span{font-size:12px;direction:ltr;text-align:left}
+.sub{font-weight:600;margin:12px 0 2px}
+.tw{overflow-x:auto}table{border-collapse:collapse;min-width:100%}td,th{padding:4px;font-size:12px;direction:ltr;text-align:left}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.note{font-size:12px;color:var(--mu)}
+.ro input,.ro select,.ro textarea{pointer-events:none;background:var(--ac2)}
+.ltr{direction:ltr;text-align:left}.ltr h2{text-align:left}
+.ln{display:grid;gap:8px;margin:8px 0}
+.f{display:flex;align-items:center;gap:5px;min-width:0}.f span{white-space:nowrap;font-size:12px}.f input{flex:1;min-width:0;padding:6px}
+.bt{width:100%;border-collapse:collapse}.bt td,.bt th{border:1px solid var(--bd);padding:2px 4px;font-size:12px}
+.bt td:first-child{min-width:128px}.bt input{border:0;background:transparent;padding:6px 3px;min-width:70px}
+.bt th{background:var(--ac2);text-align:center}.bt tr.sh td{font-weight:700;background:var(--ac2)}
+.sg{display:inline-flex;gap:3px}
+button[data-s]{padding:4px 7px;font-size:12px;border-radius:6px;min-width:34px}
+button[data-s].on{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.okb.on{background:#1f8f4e;border-color:#1f8f4e}button.nob.on{background:#c0392b;border-color:#c0392b}
+.gh:not(.on){opacity:.4}.ro button{pointer-events:none}.bt td.c{text-align:center}
+#ov{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 8px) 10px 24px;box-sizing:border-box}#ov[hidden]{display:none}
+.ovt{display:flex;gap:8px;margin-bottom:8px}
+.it{display:flex;gap:6px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:8px;margin:6px 0}.it span{flex:1}
+.sheet{background:#fff;color:#000;padding:12px;direction:ltr;text-align:left;font:12px Arial,sans-serif;max-width:760px;margin:auto}
+.sheet .ph{font-weight:700;text-decoration:underline;margin:12px 0 4px}.sheet .pl{display:flex;justify-content:space-between;gap:8px;margin:3px 0}
+.pt{border-collapse:collapse;width:100%;margin:4px 0}.pt td,.pt th{border:1px solid #000;padding:2px 4px;font-size:11px}.pt th{background:#eee}.sheet .ob{white-space:pre-wrap}
+#toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;z-index:30}
+@media print{main,header,#toast,.ovt{display:none!important}#ov{position:static!important;overflow:visible!important;padding:0}}
+@media print{header,.bar{display:none}section{break-inside:avoid}}
+</style></head><body>
+<header><h1>فيشة مراقبة واختبار المحول n°1 — TAZA II</h1>
+<div class="tabs"><button id="t1" class="on">إدخال البيانات</button><button id="t2">المرجع (النسخة الأصلية)</button></div></header>
+<main><div id="note" class="note"></div><div class="bar" id="bar"></div><div id="app"></div></main>
+<div id="ov" hidden><div class="ovt"><button id="oc">إغلاق</button><button id="op">طباعة / PDF</button></div><div id="ovc"></div></div><div id="toast"></div>
+<script>
+const ST=["","OK","Non OK","En défaut","H.S","X","-"];
+const O={fce:"FCE-T n° 01/2018",date:"2023-05-14",poste:"TAZA II",travee:"TR 225/60/11 kV n°1",
+marque:"ITALTRAFO",tension:"225",freq:"50",type:"-",puiss:"100",serie:"1L7002/2",tcc:"15",refroid:"ONAN-ONAF-ODAF-OFAF",rtype:"MR",prises:"21",rpass:"2.25",tmot:"127",bmarque:"ITALTRAFO",btension:"11000/400",btype:"",bpuiss:"125",
+i_app:"METREL",i_type:"MI-2077",i_ser:"13280863",i_date:"21/12/2014",
+m_inj_t:"1000",m_temp_m:"14°C",m_pc_m:"941 MΩ",m_sc_m:"975 MΩ",m_tc_m:"1 GΩ",m_ps_m:"1.1 GΩ",m_pt_m:"1.3 GΩ",m_st_m:"1 GΩ",m_ct_m:"19 MΩ",m_cca_m:"240 kΩ",m_ca_m:"241 kΩ",m_cp_m:"238 kΩ",m_cr_m:"26 kΩ",
+b_inj_t:"500",b_temp_m:"14°C",b_pc_m:"1.2 GΩ",b_sc_m:"1.3 GΩ",b_ps_m:"1.7 GΩ",b_cb_m:"2.5 GΩ",
+p_bha:"",p_bhd:"",p_rr:"",p_toa:"",p_tod:"",p_thha:"",p_thhd:"",p_tbha:"",p_tbhd:"",p_nbt:"OK",p_nbr:"OK",p_sou:"",p_cla:"",p_ind:"",p_e225:"OK",p_e60:"OK",p_rad:"",p_tra:"",p_bhr:"",p_ant:"OK",p_van:"",
+a_pompe1:"OK",a_pompe2:"En défaut",a_pompe3:"OK",a_pompe4:"-",
+a_v11:"OK",a_v12:"OK",a_v13:"OK",a_v14:"-",a_v21:"OK",a_v22:"OK",a_v23:"OK",a_v24:"-",a_v31:"OK",a_v32:"OK",a_v33:"OK",a_v34:"-",
+d_aman:"X",d_chauf:"X",d_eclai:"X",d_incen:"H.S",r_man:"X",
+n_resp:"BENSAID",n_chef:"ELHLAISSI",n_serv:"MIQOI"};
+for(let v=4;v<=8;v++)for(let g=1;g<=4;g++)O["a_v"+v+g]="-";
+const MR=[["pc","Primaire-cuve (GΩ)"],["sc","Secondaire-cuve (GΩ)"],["tc","Tertiaire-cuve (GΩ)"],["ps","Primaire-Secondaire (GΩ)"],["pt","Primaire-Tertiaire (GΩ)"],["st","Secondaire- Tertiaire (GΩ)"],["ct","Cuve-Terre (kΩ)"],["cca","Cuve-Coffret Aéros (GΩ)"],["ca","Cuve- Aéros (GΩ)"],["cp","Cuve-Pompe (GΩ)"],["cr","Cuve-Coffret Régleur (GΩ)"]];
+const BR=[["pc","Primaire-cuve (GΩ)"],["sc","Secondaire-cuve (GΩ)"],["ps","Primaire-Secondaire (GΩ)"],["cb","Cuve Transfo-Cuve Biberon (GΩ)"]];
+const TODAY=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const PR=[["bha","Buchholz Alarme"],["bhd","Buchholz Déclenchement"],["rr","Relais protection Régleur"],["toa","Température Huile Alarme"],["tod","Température Huile Déclenchement"],["thha","Température Bobinage HT Alarme"],["thhd","Température Bobinage HT Déclenchement"],["tbha","Température Bobinage BT Alarme"],["tbhd","Température Bobinage BT Déclenchement"],["nbt","Niveau d'huile ballonnet transformateur"],["nbr","Niveau d'huile ballonnet régleur"],["sou","Soupape de sécurité"],["cla","Clapet anti-retour"],["ind","Indicateur de température"],["e225","Réglage des éclateurs 225kV (1200mm)"],["e60","Réglage des éclateurs 60kV (350mm)"],["rad","Purge des radiateurs"],["tra","Purge des traversées"],["bhr","Purge des relais Buchholz"],["ant","Vérification de l'Antigel"],["van","Vérification de l'exploitation des vannes"]];
+const DV=[["d_aman","Commande des aéros en manuel"],["d_aaut","Commande des aéros en automatique"],["d_daer","Contrôle des défauts Aéros"],["d_dpom","Contrôle des défauts Pompes"],["d_chauf","Contrôle Chauffage"],["d_eclai","Contrôle Eclairage"],["d_incen","Vérification protection incendie"],["r_man","Commande du Régleur en manuel"],["r_aut","Commande du Régleur automatique"],["r_min","Vérification position min Régleur"],["r_max","Vérification position max Régleur"],["r_rap","Rapport de transformation"]];
+const TX=[["fce","N° FCE"],["poste","Poste"],["travee","Travée"]];
+const CA=[["marque","Marque"],["tension","Tension (kV)"],["freq","F (Hz)"],["type","Type"],["puiss","Puissance (MVA)"],["serie","Série"],["tcc","Tension CC (%)"],["refroid","Refroidissement"],["rtype","Régleur type"],["prises","Nombre de prises"],["rpass","Résistance de passage (Ω)"],["tmot","Tension moteur (V)"],["bmarque","Biberon marque"],["btension","Biberon tension (V)"],["btype","Type biberon"],["bpuiss","Puissance biberon (kVA)"]];
+const K="transfo-taza2-v1";let mode="in",V={};
+const $=s=>document.querySelector(s),e=s=>String(s).replace(/"/g,"&quot;");
+function inp(k,l,t){return`<label>${l}</label><input data-k="${k}" type="${t||"text"}" value="${e(V[k]||"")}">`}
+function sel(k,l){return`<label>${l}</label><select data-k="${k}">${ST.map(o=>`<option${(V[k]||"")==o?" selected":""}>${o}</option>`).join("")}</select>`}
+function ta(k,l){return`<label>${l}</label><textarea data-k="${k}">${V[k]||""}</textarea>`}
+function dl(k){return O[k]?`<datalist id="dl_${k}"><option value="${e(O[k])}"></datalist>`:""}
+function ci(k){return`<input data-k="${k}" list="dl_${k}" value="${e(V[k]||"")}">${dl(k)}`}
+function fi(k,l,t){return`<div class="f"><span>${l} :</span>${t?`<input data-k="${k}" type="${t}" value="${e(V[k]||"")}">`:ci(k)}</div>`}
+function ln(a){return`<div class="ln" style="grid-template-columns:repeat(${a.length},1fr)">${a.map(([k,l])=>fi(k,l)).join("")}</div>`}
+function bt(){const hd=(t)=>`<tr class="sh"><td colspan="3">${t}</td></tr>`;const rw=(p,c,l)=>`<tr><td>${l}</td><td>${ci(p+"_"+c+"_t")}</td><td>${ci(p+"_"+c+"_m")}</td></tr>`;
+return`<div class="tw"><table class="bt"><tr><th></th><th>Valeur théorique</th><th>Valeur mesurée</th></tr>${hd("Transformateur principal")}${rw("m","inj","Tension injectée (V)")}${rw("m","temp","Température de test (°C)")}${MR.map(([c,l])=>rw("m",c,l)).join("")}${hd("Transformateur Biberon (auxiliaire)")}${rw("b","inj","Tension injectée (V)")}${rw("b","temp","Température de test (°C)")}${BR.map(([c,l])=>rw("b",c,l)).join("")}</table></div>`}
+const esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const fd=d=>/^\d{4}-\d\d-\d\d$/.test(d||"")?d.split("-").reverse().join("/"):(d||"");
+const NV=["Pompe","Ventilateur n°1","Ventilateur n°2","Ventilateur n°3","Ventilateur n°4","Ventilateur n°5","Ventilateur n°6","Ventilateur n°7","Ventilateur n°8"];
+const akey=(i,g)=>i?`a_v${i}${g}`:`a_pompe${g}`;
+function persist(){try{localStorage.setItem(K,JSON.stringify(V))}catch(_){}}
+function b(k,v,t,c){return`<button type="button" data-s="${k}" data-v="${v}" class="${c||""}${V[k]===v?" on":""}">${t}</button>`}
+function sg(k,a){return`<span class="sg">${a.map(([v,t])=>b(k,v,t)).join("")}</span>`}
+function xt(L){return`<div class="tw"><table class="bt">${L.map(([k,l])=>`<tr><td>${l}</td><td class="c">${sg(k,[["X","X"],["-","-"],["H.S","H.S"]])}</td></tr>`).join("")}</table></div>`}
+function toast(t){const d=$("#toast");d.textContent=t;d.style.opacity=1;setTimeout(()=>d.style.opacity=0,1800)}
+function cf(x,fn){if(x.dataset.c){clearTimeout(+x.dataset.c);x.textContent=x.dataset.t;delete x.dataset.c;fn();return}x.dataset.t=x.textContent;x.textContent="اضغط مرة أخرى للتأكيد";x.dataset.c=setTimeout(()=>{x.textContent=x.dataset.t;delete x.dataset.c},3000)}
+function showOv(h,pr){$("#ovc").innerHTML=h;$("#op").style.display=pr?"":"none";$("#ov").hidden=false;$("#ov").scrollTop=0}
+function lst(){try{return JSON.parse(localStorage.getItem(K+"-l")||"[]")}catch(_){return[]}}
+function saveCur(){if(!V._id)V._id=Date.now();const c=JSON.parse(JSON.stringify(V));c.date_u=1;const l=lst().filter(x=>x.id!==V._id);l.unshift({id:V._id,label:(V.poste||"")+" · "+fd(V.date),v:c});try{localStorage.setItem(K+"-l",JSON.stringify(l));persist();toast("تم الحفظ ✓")}catch(_){toast("تعذر الحفظ")}}
+function showList(){const l=lst();showOv(l.length?l.map(x=>`<div class="it"><span>${esc(x.label)}</span><button data-o="${x.id}">فتح</button><button data-d="${x.id}">حذف</button></div>`).join(""):'<p class="note">لا توجد فيشات محفوظة.</p>',0)}
+function pv(v){const t=k=>esc(v[k]),T=c=>`<table class="pt">${c}</table>`,H=x=>`<p class="ph">${x}</p>`;
+const CG=[["marque","Marque","tension","Tension (kV)","freq","F (hz)"],["type","Type","puiss","Puissance (MVA)"],["serie","Série","tcc","Tension CC (%)"],["refroid","Refroidissement"],["rtype","Régleur type","prises","Nombre de prises"],["rpass","Résistance de passage (Ω)","tmot","Tension moteur (V)"],["bmarque","Biberon marque","btension","Tension (V)"],["btype","Type biberon","bpuiss","Puissance (kVA)"]];
+const mt=(p,R)=>`<tr><td colspan="3"><b>${p=="m"?"Transformateur principal":"Transformateur Biberon (auxiliaire)"}</b></td></tr>`+[["inj","Tension injectée (V)"],["temp","Température de test (°C)"]].concat(R).map(([c,l])=>`<tr><td>${l}</td><td>${t(p+"_"+c+"_t")}</td><td>${t(p+"_"+c+"_m")}</td></tr>`).join("");
+const vt=L=>T(L.map(([k,l])=>`<tr><td>${l}</td><td style="width:70px;text-align:center">${t(k)}</td></tr>`).join(""));
+const ob=k=>`<p class="ob"><b>Observation :</b> ${t(k)}</p>`;
+let h=`<div class="sheet"><b>${t("fce")}</b><br><b>Date : ${esc(fd(v.date))}</b>`;
+h+=H("1. Identification de l'appareil")+`<div>Poste : ${t("poste")}</div><div>Travée : ${t("travee")}</div>`;
+h+=H("2. Caractéristiques de l'appareil")+CG.map(r=>`<div class="pl">${r.map((x,i)=>i%2?"":`<span>${r[i+1]} : <b>${t(x)}</b></span>`).join("")}</div>`).join("");
+h+=H("3. Mesurage de l'isolement")+T(`<tr><th>Appareil de mesure</th><th>Type</th><th>N° série</th><th>Date de contrôle</th></tr><tr><td>${t("i_app")}</td><td>${t("i_type")}</td><td>${t("i_ser")}</td><td>${t("i_date")}</td></tr>`)+T(`<tr><th></th><th>Valeur théorique</th><th>Valeur mesurée</th></tr>${mt("m",MR)}${mt("b",BR)}`)+ob("obs1");
+h+=H("4. Contrôle et réglage des accessoires de protection")+T(`<tr><th></th><th>OK</th><th>Non OK</th></tr>`+PR.map(([k,l])=>`<tr><td>${l}</td><td>${v["p_"+k]=="OK"?"OK":""}</td><td>${v["p_"+k]=="Non OK"?"Non OK":""}</td></tr>`).join(""));
+h+=H("5. Contrôle des groupes Aéro-réfrigérants")+T(`<tr><th></th><th>Groupe n°1</th><th>Groupe n°2</th><th>Groupe n°3</th><th>Groupe n°4</th></tr>`+NV.map((n,i)=>`<tr><td>${n}</td>${[1,2,3,4].map(g=>`<td>${t(akey(i,g))}</td>`).join("")}</tr>`).join(""))+ob("obs2");
+h+=H("6. Vérifications diverses")+vt(DV.slice(0,7))+vt(DV.slice(7))+ob("obs3")+T(`<tr><th></th><th>Régleur</th></tr><tr><td>Relevé compteur de Régleur</td><td>${t("r_cpt")}</td></tr>`);
+h+=`<br>`+T(`<tr><th></th><th>Resp. Travaux</th><th>Chef de section</th><th>Chef de Service Maintenance</th></tr><tr><td><b>Nom</b></td><td>${t("n_resp")}</td><td>${t("n_chef")}</td><td>${t("n_serv")}</td></tr><tr><td><b>Visa</b></td><td>&nbsp;</td><td></td><td></td></tr>`)+`</div>`;return h}
+function mrows(p,R){return R.map(([c,l])=>`<div class="row"><span>${l}</span>${p==="m"&&0?"":""}<input data-k="${p}_${c}_t" placeholder="théorique" value="${e(V[p+"_"+c+"_t"]||"")}"><input data-k="${p}_${c}_m" placeholder="mesurée" value="${e(V[p+"_"+c+"_m"]||"")}"></div>`).join("")}
+function render(){
+const ro=mode==="ref";
+let h=`<div class="${ro?"ro":""}">`;
+h+=`<section class="ltr"><h2>1. Identification de l'appareil</h2>${fi("fce","N° FCE")}${fi("date","Date","date")}${fi("poste","Poste")}${fi("travee","Travée")}</section>`;
+h+=`<section class="ltr"><h2>2. Caractéristiques de l'appareil</h2>${ln([["marque","Marque"],["tension","Tension (kV)"],["freq","F (Hz)"]])}${ln([["type","Type"],["puiss","Puissance (MVA)"]])}${ln([["serie","Série"],["tcc","Tension CC (%)"]])}${ln([["refroid","Refroidissement"]])}${ln([["rtype","Régleur type"],["prises","Nombre de prises"]])}${ln([["rpass","Résistance de passage (Ω)"],["tmot","Tension moteur (V)"]])}${ln([["bmarque","Biberon marque"],["btension","Tension (V)"]])}${ln([["btype","Type biberon"],["bpuiss","Puissance (kVA)"]])}</section>`;
+h+=`<section class="ltr"><h2>3. Mesurage de l'isolement</h2><div class="tw"><table class="bt"><tr><th>Appareil de mesure</th><th>Type</th><th>N° série</th><th>Date de contrôle</th></tr><tr><td>${ci("i_app")}</td><td>${ci("i_type")}</td><td>${ci("i_ser")}</td><td>${ci("i_date")}</td></tr></table></div><div style="height:10px"></div>${bt()}${ta("obs1","Observation")}</section>`;
+h+=`<section class="ltr"><h2>4. Contrôle et réglage des accessoires de protection</h2><div class="tw"><table class="bt"><tr><th></th><th>OK</th><th>Non OK</th></tr>${PR.map(([k,l])=>`<tr><td>${l}</td><td class="c">${b("p_"+k,"OK","OK","okb gh")}</td><td class="c">${b("p_"+k,"Non OK","Non OK","nob gh")}</td></tr>`).join("")}</table></div></section>`;
+h+=`<section class="ltr"><h2>5. Contrôle des groupes Aéro-réfrigérants</h2><div class="tw"><table class="bt"><tr><th></th><th>Groupe n°1</th><th>Groupe n°2</th><th>Groupe n°3</th><th>Groupe n°4</th></tr>${NV.map((n,i)=>`<tr><td>${n}</td>${[1,2,3,4].map(g=>`<td class="c">${sg(akey(i,g),[["OK","OK"],["-","-"],["En défaut","Déf."]])}</td>`).join("")}</tr>`).join("")}</table></div><div class="note">Déf. = En défaut</div>${ta("obs2","Observation")}</section>`;
+h+=`<section class="ltr"><h2>6. Vérifications diverses</h2>${xt(DV.slice(0,7))}<div style="height:8px"></div>${xt(DV.slice(7))}${ta("obs3","Observation")}<div class="tw"><table class="bt"><tr><th></th><th>Régleur</th></tr><tr><td>Relevé compteur de Régleur</td><td>${ci("r_cpt")}</td></tr></table></div></section>`;
+h+=`<section><h2>Visas</h2><div class="g2">${inp("n_resp","Resp. Travaux")}${inp("n_chef","Chef de section")}${inp("n_serv","Chef de Service Maintenance")}</div></section></div>`;
+$("#app").innerHTML=h;
+document.querySelectorAll("[data-k]").forEach(x=>{if(ro)x.disabled=true;x.oninput=x.onchange=()=>{V[x.dataset.k]=x.value;if(x.dataset.k==="date")V.date_u=1;try{localStorage.setItem(K,JSON.stringify(V))}catch(_){}}});
+}
+function setMode(m){mode=m;$("#t1").className=m==="in"?"on":"";$("#t2").className=m==="ref"?"on":"";
+if(m==="ref"){V=JSON.parse(JSON.stringify(O));$("#note").textContent="عرض للقراءة فقط: القيم كما وردت في الملف الأصلي (الملف .doc الأصلي محفوظ كنسخة منفصلة).";$("#bar").innerHTML="";}
+else{try{V=JSON.parse(localStorage.getItem(K)||"{}")}catch(_){V={}}
+if(!V.date_u)V.date=TODAY;if(!V.freq)V.freq="50";
+$("#note").textContent="تُحفظ البيانات تلقائياً على هذا الجهاز.";
+$("#bar").innerHTML='<button id="b4">معاينة</button><button id="b5">حفظ</button><button id="b6">المحفوظات</button><button id="b1">تحميل قيم النسخة الأصلية</button><button id="b3">فيشة جديدة</button>';
+$("#b4").onclick=()=>showOv(pv(V),1);$("#b5").onclick=saveCur;$("#b6").onclick=showList;
+$("#b1").onclick=function(){cf(this,()=>{V=JSON.parse(JSON.stringify(O));V.date=TODAY;persist();render()})};
+$("#b3").onclick=function(){cf(this,()=>{V={date:TODAY,freq:"50"};persist();render()})};}
+render()}
+$("#app").addEventListener("click",ev=>{const x=ev.target.closest("[data-s]");if(!x||mode==="ref")return;const k=x.dataset.s,v=x.dataset.v;V[k]=V[k]===v?"":v;persist();document.querySelectorAll(`[data-s="${k}"]`).forEach(y=>y.classList.toggle("on",V[k]===y.dataset.v))});
+$("#oc").onclick=()=>{$("#ov").hidden=true};$("#op").onclick=()=>{try{window.print()}catch(_){}};
+$("#ovc").onclick=ev=>{const x=ev.target.closest("button");if(!x)return;if(x.dataset.o){const r=lst().find(y=>String(y.id)===x.dataset.o);if(r){V=r.v;persist();$("#ov").hidden=true;setMode("in")}}else if(x.dataset.d){cf(x,()=>{try{localStorage.setItem(K+"-l",JSON.stringify(lst().filter(y=>String(y.id)!==x.dataset.d)))}catch(_){}showList()})}};
+$("#t1").onclick=()=>setMode("in");$("#t2").onclick=()=>setMode("ref");setMode("in");
+</script></body></html>
