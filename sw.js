@@ -1,5 +1,5 @@
-// الإصدار 8 — يجلب الملفات من الشبكة أولاً ثم يرجع للذاكرة عند انقطاع الانترنت
-const C="transfo-taza2-v8";
+// الإصدار 9 — يجلب الملفات من الشبكة أولاً ثم يرجع للذاكرة عند انقطاع الانترنت
+const C="transfo-taza2-v9";
 const F=["./","index.html","manifest.json","icon-v2-192.png","icon-v2-512.png","icon-v2-maskable-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>Promise.all(F.map(u=>fetch(new Request(u,{cache:"reload"})).then(r=>r.ok?c.put(u,r):null).catch(()=>null)))));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
